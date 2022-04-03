@@ -54,7 +54,7 @@ import (
 )
 
 func main() {
-	api, err := biliapi.NewBiliApi()
+	api, err := biliapi.NewBiliApi(biliapi.EnableDebugLogger())
 	if err != nil {
 		panic(err)
 	}

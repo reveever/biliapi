@@ -125,12 +125,15 @@ func (b *Base) Post(path string, values url.Values, body []byte, result interfac
 }
 
 func (b *Base) MakeRequest(method, path string, opt interface{}, body []byte) (*http.Response, error) {
-	values, err := query.Values(opt)
-	if err != nil {
-		return nil, err
-	}
+	url := b.APIEndpoint + path
+	if opt != nil {
+		values, err := query.Values(opt)
+		if err != nil {
+			return nil, err
+		}
 
-	url := b.APIEndpoint + path + "?" + values.Encode()
+		url += "?" + values.Encode()
+	}
 
 	if b.Log != nil {
 		b.Log.Printf("%s: %s", method, url)
