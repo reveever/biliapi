@@ -3,9 +3,13 @@
 
 部分 bilibili API SDK，大致定了个框架，挑着用得到的 API 先实现了
 
-API 接口信息大多来自 [bilibili-API-collect](https://github.com/SocialSisterYi/bilibili-API-collect) 项目
+API 接口信息大多来自 [bilibili-API-collect](https://github.com/SocialSisterYi/bilibili-API-collect) 项目，~~B站官方代码结构和接口也是可以参考一下的~~
 
-~~B站官方代码结构和接口也是可以参考一下的~~
+已实现的接口信息可以参考 godoc:
+
+- [视频弹幕相关](https://pkg.go.dev/github.com/reveever/biliapi/interface/v2dm)
+- [用户空间相关](https://pkg.go.dev/github.com/reveever/biliapi/interface/space)
+- [直播间相关](https://pkg.go.dev/github.com/reveever/biliapi/interface/live)
 
 ## Example
 

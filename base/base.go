@@ -69,7 +69,7 @@ func (b *Base) GetJson(url string, opt interface{}, result interface{}) error {
 	contentTypes := resp.Header.Get("Content-Type")
 	if !strings.Contains(contentTypes, "application/json") {
 		buf, _ := ioutil.ReadAll(resp.Body)
-		return fmt.Errorf("unexpected content type %s: %s", contentTypes, string(buf))
+		return fmt.Errorf("unexpected resp %s: %s", contentTypes, string(buf))
 	}
 
 	var apiResp APIResponse
@@ -105,7 +105,7 @@ func (b *Base) GetPb(url string, opt interface{}, result protoreflect.ProtoMessa
 	contentTypes := resp.Header.Get("Content-Type")
 	if !strings.Contains(contentTypes, "application/octet-stream") {
 		buf, _ := ioutil.ReadAll(resp.Body)
-		return fmt.Errorf("unexpected content type %s: %s", contentTypes, string(buf))
+		return fmt.Errorf("unexpected resp %s: %s", contentTypes, string(buf))
 	}
 
 	buf, err := ioutil.ReadAll(resp.Body)
