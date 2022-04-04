@@ -7,7 +7,7 @@ import (
 	"github.com/reveever/biliapi/proto/dm"
 )
 
-const xV2Dm = "/x/v2/dm"
+var xV2Dm = base.APIEndpoint + "/x/v2/dm"
 
 type API struct {
 	base *base.Base

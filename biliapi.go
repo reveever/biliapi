@@ -53,12 +53,6 @@ func WithHttpClient(c *http.Client) func(*BiliAPI) {
 	}
 }
 
-func WithAPIEndpoint(a string) func(*BiliAPI) {
-	return func(b *BiliAPI) {
-		b.Base.APIEndpoint = a
-	}
-}
-
 func WithUserAgent(ua string) func(*BiliAPI) {
 	return func(b *BiliAPI) {
 		b.Base.UserAgent = ua

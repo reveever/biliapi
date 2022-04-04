@@ -17,16 +17,16 @@ import (
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
-const (
-	APIEndpoint = "https://api.bilibili.com"
-	DefaultUA   = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36 Edg/98.0.1108.62"
+var (
+	APIEndpoint     = "https://api.bilibili.com"
+	APILiveEndpoint = "https://api.live.bilibili.com"
+	DefaultUA       = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36 Edg/98.0.1108.62"
 )
 
 type Base struct {
-	Client      *http.Client
-	Log         BaseLogger
-	APIEndpoint string
-	UserAgent   string
+	Client    *http.Client
+	Log       BaseLogger
+	UserAgent string
 }
 
 type BaseLogger interface {
@@ -47,24 +47,20 @@ func (b *Base) Init() error {
 		b.Client = &http.Client{Jar: jar}
 	}
 
-	if b.APIEndpoint == "" {
-		b.APIEndpoint = APIEndpoint
-	}
-
 	if b.UserAgent == "" {
 		b.UserAgent = DefaultUA
 	}
 
-	_, err := b.MakeRequest("GET", "/x/web-interface/nav", nil, nil)
+	_, err := b.MakeRequest("GET", APIEndpoint+"/x/web-interface/nav", nil, nil)
 	if err != nil {
-		return fmt.Errorf("test failed: %v", err)
+		return fmt.Errorf("api test failed: %v", err)
 	}
 
 	return nil
 }
 
-func (b *Base) GetJson(path string, opt interface{}, result interface{}) error {
-	resp, err := b.MakeRequest("GET", path, opt, nil)
+func (b *Base) GetJson(url string, opt interface{}, result interface{}) error {
+	resp, err := b.MakeRequest("GET", url, opt, nil)
 	if err != nil {
 		return err
 	}
@@ -99,8 +95,8 @@ func (b *Base) GetJson(path string, opt interface{}, result interface{}) error {
 	return nil
 }
 
-func (b *Base) GetPb(path string, opt interface{}, result protoreflect.ProtoMessage) error {
-	resp, err := b.MakeRequest("GET", path, opt, nil)
+func (b *Base) GetPb(url string, opt interface{}, result protoreflect.ProtoMessage) error {
+	resp, err := b.MakeRequest("GET", url, opt, nil)
 	if err != nil {
 		return err
 	}
@@ -124,8 +120,7 @@ func (b *Base) Post(path string, values url.Values, body []byte, result interfac
 	return errors.New("TODO")
 }
 
-func (b *Base) MakeRequest(method, path string, opt interface{}, body []byte) (*http.Response, error) {
-	url := b.APIEndpoint + path
+func (b *Base) MakeRequest(method, url string, opt interface{}, body []byte) (*http.Response, error) {
 	if opt != nil {
 		values, err := query.Values(opt)
 		if err != nil {

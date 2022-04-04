@@ -4,7 +4,7 @@ import (
 	"github.com/reveever/biliapi/base"
 )
 
-const xSpace = "/x/space"
+var xSpace = base.APIEndpoint + "/x/space"
 
 type API struct {
 	base *base.Base
