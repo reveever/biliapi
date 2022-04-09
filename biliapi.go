@@ -7,6 +7,7 @@ import (
 
 	"github.com/reveever/biliapi/base"
 	"github.com/reveever/biliapi/interface/live"
+	"github.com/reveever/biliapi/interface/room"
 	"github.com/reveever/biliapi/interface/space"
 	"github.com/reveever/biliapi/interface/v2dm"
 )
@@ -16,6 +17,7 @@ type BiliAPI struct {
 	Space *space.API
 	V2Dm  *v2dm.API
 	Live  *live.API
+	Room  *room.API
 }
 
 func NewBiliApi(options ...func(*BiliAPI)) (*BiliAPI, error) {
@@ -25,6 +27,7 @@ func NewBiliApi(options ...func(*BiliAPI)) (*BiliAPI, error) {
 		Space: space.NewAPI(base),
 		V2Dm:  v2dm.NewAPI(base),
 		Live:  live.NewAPI(base),
+		Room:  room.NewAPI(base),
 	}
 
 	for _, o := range options {
