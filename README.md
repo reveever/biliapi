@@ -7,8 +7,8 @@ API 接口信息大多来自 [bilibili-API-collect](https://github.com/SocialSis
 
 已实现的接口信息可以参考 godoc:
 
-- [视频弹幕相关](https://pkg.go.dev/github.com/reveever/biliapi/interface/v2dm)
 - [用户空间相关](https://pkg.go.dev/github.com/reveever/biliapi/interface/space)
+- [视频弹幕相关](https://pkg.go.dev/github.com/reveever/biliapi/interface/v2dm)
 - [直播间相关](https://pkg.go.dev/github.com/reveever/biliapi/interface/live)
 
 ## Example
@@ -72,6 +72,64 @@ func main() {
 
 	buf, _ := json.Marshal(resp)
 	fmt.Println(string(buf))
+}
+```
+
+直播间信息流获取
+```go
+package main
+
+import (
+	"context"
+	"io"
+	"log"
+
+	"github.com/reveever/biliapi"
+	"github.com/reveever/biliapi/interface/live"
+	"github.com/reveever/biliapi/interface/room"
+)
+
+func main() {
+	api, err := biliapi.NewBiliApi(biliapi.EnableDebugLogger())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	roomInfo, err := api.Room.RoomInitInfo(room.RoomInitInfoOpt{ID: 213})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	liveInfo, err := api.Live.WebRoomInfo(live.WebRoomInfoOpt{ID: roomInfo.RoomID})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	l, err := biliapi.NewBiliLive(context.Background(), roomInfo.RoomID, liveInfo.Token,
+		biliapi.LiveWithBase(api.Base),
+		biliapi.LiveWithHostList(liveInfo.HostList),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for i := 0; i < 10; i++ {
+		msg, err := l.ReadWsMsg(context.TODO())
+		if err != nil {
+			if err == io.EOF {
+				log.Println("EOF")
+				break
+			}
+			log.Printf("[%02d] err: %v", i, err)
+			continue
+		}
+		if msg.Op == live.WsOpHeartbeatReply {
+			log.Printf("[%02d] %d %d %s: %x", i, msg.Ver, msg.Op, msg.Cmd, msg.Body)
+		} else {
+			log.Printf("[%02d] %d %d %s: %s", i, msg.Ver, msg.Op, msg.Cmd, string(msg.Body))
+		}
+	}
+	l.Close()
 }
 ```
 ## Doc & More examples

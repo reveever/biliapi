@@ -34,6 +34,12 @@ type BaseLogger interface {
 	Printf(format string, v ...interface{})
 }
 
+type NoLogger struct{}
+
+func (l NoLogger) Println(v ...interface{}) {}
+
+func (l NoLogger) Printf(format string, v ...interface{}) {}
+
 func (b *Base) Init() error {
 	if b == nil {
 		return errors.New("nil base")
